@@ -25,8 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'accessibility_textcolour';
-$plugin->release = '2.0.2';
-$plugin->version = 2025021800;
+$plugin->release = '2.3.0';
+$plugin->version = 2025061101;
 $plugin->requires = 2022041900;
 $plugin->maturity = MATURITY_STABLE;
 $plugin->dependencies = [

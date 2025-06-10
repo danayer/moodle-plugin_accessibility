@@ -89,6 +89,14 @@ function xmldb_local_accessibility_upgrade($oldversion) {
         }
         upgrade_plugin_savepoint(true, 2023110101, 'local', 'accessibility');
     }
+    if ($oldversion < 2025061101) {
+        // Force refresh of all accessibility widgets and JavaScript modules
+        // Clear all caches to ensure new auto contrast functionality loads
+        purge_all_caches();
+        
+        // Upgrade savepoint reached.
+        upgrade_plugin_savepoint(true, 2025061101, 'local', 'accessibility');
+    }
 
     return true;
 }

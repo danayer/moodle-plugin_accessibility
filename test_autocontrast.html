@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Auto Contrast Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        
+        .test-container {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+        
+        .color-input {
+            margin: 10px 0;
+        }
+        
+        .demo-text {
+            margin: 15px 0;
+        }
+        
+        h1,
+        h2,
+        h3,
+        p {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🎨 Automatic Text Color Contrast Test</h1>
+
+    <div class="test-container">
+        <h2>Manual Test</h2>
+        <div class="color-input">
+            <label>Background Color: </label>
+            <input type="color" id="bgColorPicker" value="#ffffff">
+            <button onclick="testAutoContrast()">Apply Auto Contrast</button>
+            <button onclick="resetContrast()">Reset</button>
+        </div>
+
+        <div class="demo-text">
+            <h3>Sample Text Content</h3>
+            <p>This is a paragraph to test text visibility.</p>
+            <p>The automatic contrast system should make this text readable on any background.</p>
+            <ul>
+                <li>List item 1</li>
+                <li>List item 2</li>
+                <li>List item 3</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>Predefined Color Tests</h2>
+        <button onclick="testColor('#000000')">Black Background</button>
+        <button onclick="testColor('#ffffff')">White Background</button>
+        <button onclick="testColor('#ff0000')">Red Background</button>
+        <button onclick="testColor('#00ff00')">Green Background</button>
+        <button onclick="testColor('#0000ff')">Blue Background</button>
+        <button onclick="testColor('#ffff00')">Yellow Background</button>
+        <button onclick="testColor('#800080')">Purple Background</button>
+        <button onclick="testColor('#808080')">Gray Background</button>
+    </div>
+
+    <script>
+        // Mock the Moodle AMD module system for testing
+        window.require = function(modules, callback) {
+            // Simulate the autocontrast module
+            const autocontrast = {
+                applyAutoTextColor: function(bgColor) {
+                    console.log('🎨 Applying auto text color for background:', bgColor);
+
+                    if (!bgColor || !bgColor.match(/^#[0-9a-f]{6}$/i)) {
+                        console.warn('Invalid background color format:', bgColor);
+                        return;
+                    }
+
+                    const textColor = getOptimalTextColor(bgColor);
+                    console.log('✅ Calculated optimal text color:', textColor);
+
+                    // Apply background color
+                    document.body.style.backgroundColor = bgColor;
+
+                    // Apply text color
+                    document.body.style.color = textColor;
+                    document.body.classList.add('accessibility-auto-text');
+
+                    // Update color picker
+                    document.getElementById('bgColorPicker').value = bgColor;
+                },
+
+                resetAutoTextColor: function() {
+                    console.log('🔄 Resetting auto text color');
+                    document.body.style.backgroundColor = '';
+                    document.body.style.color = '';
+                    document.body.classList.remove('accessibility-auto-text');
+                    document.getElementById('bgColorPicker').value = '#ffffff';
+                }
+            };
+
+            callback(autocontrast);
+        };
+
+        // WCAG contrast calculation functions
+        function calculateLuminance(hex) {
+            hex = hex.replace('#', '');
+
+            const r = parseInt(hex.substr(0, 2), 16) / 255;
+            const g = parseInt(hex.substr(2, 2), 16) / 255;
+            const b = parseInt(hex.substr(4, 2), 16) / 255;
+
+            const rLinear = r <= 0.03928 ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4);
+            const gLinear = g <= 0.03928 ? g / 12.92 : Math.pow((g + 0.055) / 1.055, 2.4);
+            const bLinear = b <= 0.03928 ? b / 12.92 : Math.pow((b + 0.055) / 1.055, 2.4);
+
+            return 0.2126 * rLinear + 0.7152 * gLinear + 0.0722 * bLinear;
+        }
+
+        function getOptimalTextColor(backgroundColor) {
+            const luminance = calculateLuminance(backgroundColor);
+            return luminance > 0.179 ? '#000000' : '#ffffff';
+        }
+
+        // Test functions
+        function testAutoContrast() {
+            const bgColor = document.getElementById('bgColorPicker').value;
+            require(['autocontrast'], function(autocontrast) {
+                autocontrast.applyAutoTextColor(bgColor);
+            });
+        }
+
+        function resetContrast() {
+            require(['autocontrast'], function(autocontrast) {
+                autocontrast.resetAutoTextColor();
+            });
+        }
+
+        function testColor(color) {
+            document.getElementById('bgColorPicker').value = color;
+            testAutoContrast();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Auto Contrast Test Page Loaded');
+            console.log('Use the color picker or predefined buttons to test automatic text contrast');
+        });
+    </script>
+</body>
+
+</html>

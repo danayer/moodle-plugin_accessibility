@@ -46,7 +46,6 @@ class backgroundcolour extends colourwidget implements apply_style {
      */
     public function init() {
         global $PAGE;
-        /** @var \moodle_page $PAGE */ $PAGE;
 
         $userconfig = $this->getuserconfig();
         if ($userconfig) {

@@ -62,6 +62,29 @@ class textcolour extends colourwidget implements apply_style {
     }
 
     /**
+     * Check if this text color was set automatically by background color widget
+     *
+     * @return bool
+     */
+    public function isautoset() {
+        // Check if there's a background color set and if text color matches the optimal contrast
+        $backgroundwidget = new \accessibility_backgroundcolour\backgroundcolour();
+        $backgroundcolor = $backgroundwidget->getuserconfig();
+        
+        if (!$backgroundcolor) {
+            return false;
+        }
+        
+        $textcolor = $this->getuserconfig();
+        if (!$textcolor) {
+            return false;
+        }
+        
+        // Simple check - if text color is pure white or black, it's likely auto-set
+        return $textcolor === '#ffffff' || $textcolor === '#000000';
+    }
+
+    /**
      * Apply own css styles, will be served to all users when plugin is enabled.
      *
      * @return string

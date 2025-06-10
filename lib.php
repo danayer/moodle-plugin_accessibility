@@ -324,3 +324,61 @@ function local_accessibility_before_footer() {
 
     return $mainbutton . $panel;
 }
+
+/**
+ * Calculate optimal text color for given background color using WCAG contrast ratio
+ *
+ * @param string $backgroundcolor Hex color code for background
+ * @return string Optimal text color (#ffffff or #000000)
+ */
+function local_accessibility_getoptimaltextcolor($backgroundcolor) {
+    // Remove # if present and validate hex format
+    $hex = ltrim($backgroundcolor, '#');
+    if (strlen($hex) !== 6 || !ctype_xdigit($hex)) {
+        return '#000000'; // Default to black for invalid colors
+    }
+
+    // Convert hex to RGB
+    $r = hexdec(substr($hex, 0, 2));
+    $g = hexdec(substr($hex, 2, 2));
+    $b = hexdec(substr($hex, 4, 2));
+
+    // Calculate relative luminance using WCAG 2.1 formula
+    $rsrgb = $r / 255;
+    $gsrgb = $g / 255;
+    $bsrgb = $b / 255;
+
+    $rlinear = $rsrgb <= 0.03928 ? $rsrgb / 12.92 : pow(($rsrgb + 0.055) / 1.055, 2.4);
+    $glinear = $gsrgb <= 0.03928 ? $gsrgb / 12.92 : pow(($gsrgb + 0.055) / 1.055, 2.4);
+    $blinear = $bsrgb <= 0.03928 ? $bsrgb / 12.92 : pow(($bsrgb + 0.055) / 1.055, 2.4);
+
+    $luminance = 0.2126 * $rlinear + 0.7152 * $glinear + 0.0722 * $blinear;
+
+    // Return white for dark backgrounds (luminance < 0.179), black for light backgrounds
+    // This threshold ensures WCAG AA compliance (4.5:1 contrast ratio)
+    return $luminance > 0.179 ? '#000000' : '#ffffff';
+}
+
+/**
+ * Apply automatic text color adjustment when background color changes
+ *
+ * @param string $backgroundcolor Background color hex value
+ * @return bool Success status
+ */
+function local_accessibility_applyautotextcolor($backgroundcolor) {
+    if (empty($backgroundcolor)) {
+        return false;
+    }
+
+    $optimaltextcolor = local_accessibility_getoptimaltextcolor($backgroundcolor);
+    
+    try {
+        // Get text color widget instance and apply optimal color
+        $textcolorwidget = local_accessibility_getwidgetinstancebyname('textcolour');
+        $textcolorwidget->setuserconfig($optimaltextcolor);
+        return true;
+    } catch (Exception $e) {
+        // Text color widget may not be installed/enabled
+        return false;
+    }
+}

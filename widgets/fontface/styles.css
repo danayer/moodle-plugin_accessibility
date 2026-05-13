@@ -19,11 +19,6 @@ along with Moodle.  If not, see <https://www.gnu.org/licenses/>. */
  * @copyright   2023 Ponlawat Weerapanpisit <ponlawat_w@outlook.co.th>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-@font-face {
-    font-family: opendyslexic;
-    src: url(../../../../local/accessibility/widgets/fontface/assets/opendyslexic.otf) format('opentype');
-}
-
 body.accessibility-fontface-serif,
 body.accessibility-fontface-serif *:not(i) {
     font-family: none !important; /* stylelint-disable-line declaration-no-important */
@@ -32,9 +27,4 @@ body.accessibility-fontface-serif *:not(i) {
 body.accessibility-fontface-sansserif,
 body.accessibility-fontface-sansserif *:not(i) {
     font-family: sans-serif !important; /* stylelint-disable-line declaration-no-important */
-}
-
-body.accessibility-fontface-dyslexic,
-body.accessibility-fontface-dyslexic *:not(i) {
-    font-family: opendyslexic !important; /* stylelint-disable-line declaration-no-important */
 }

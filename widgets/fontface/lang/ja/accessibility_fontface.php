@@ -22,7 +22,6 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['dyslexic'] = 'ディスレクシア';
 $string['pluginname'] = 'フォント';
 $string['sansserif'] = 'サンセリフ';
 $string['serif'] = 'セリフ';

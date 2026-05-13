@@ -48,7 +48,10 @@ class fontface extends widgetbase {
         $userconfig = $this->getuserconfig();
         if ($userconfig) {
             $fontface = clean_param($userconfig, PARAM_ALPHANUM);
-            $this->addbodyclass('accessibility-fontface-' . $fontface);
+            $allowedfontfaces = ['serif', 'sansserif'];
+            if (in_array($fontface, $allowedfontfaces, true)) {
+                $this->addbodyclass('accessibility-fontface-' . $fontface);
+            }
         }
 
         /** @var \moodle_page $PAGE */
